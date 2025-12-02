@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.tailwindcss.com"></script>
+<title>Register</title>
+</head>
+<body class="bg-white-100 flex items-center justify-center h-screen">
+<div class="p-8 w-full max-w-md align-items-center">
+    <img src="../static/bsu_logo.png" alt="BukSU Logo" class="mx-auto mb-3 w-[100px] h-[100px]" />
+
+    <h2 class="text-2xl font-bold mb-6 text-center">Teacher Registration</h2>
+    {% if error %}
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">
+            <strong>Error:</strong> {{ error }}
+        </div>
+        {% endif %}
+
+    <form method="POST" class="space-y-4">
+        <input type="text" name="full_name" placeholder="Full Name" class="w-full p-2 border rounded" required>
+        <input type="text" name="username" placeholder="Username" class="w-full p-2 border rounded" required>
+        <input type="password" name="password" placeholder="Password" class="w-full p-2 border rounded" required>
+        <button class="w-full bg-gray-800 text-white p-2 rounded hover:bg-gray-700">Register</button>
+    </form>
+    <p class="mt-4 text-center">Already have an account? <a href="/login" class="text-blue-500">Login</a></p>
+</div>
+</body>
+</html>

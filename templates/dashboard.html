@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="https://cdn.tailwindcss.com"></script>
+<title>Dashboard</title>
+</head>
+
+<body class="bg-gray-100 font-sans text-gray-800 min-h-screen">
+
+<!-- Topbar -->
+<header class="bg-white shadow-md sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+    <div class="flex items-center gap-3">
+      <img src="../static/bsu_logo.png" alt="BukSU Logo" class="h-10 w-10 rounded-full">
+      <span class="text-xl font-bold text-gray-800">BUKSU Dashboard</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <span class="hidden sm:inline text-gray-700">Hello, {{ teacher.full_name }}</span>
+      <a href="/logout" class="flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow transition">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1m0-8v-1a2 2 0 114 0v1"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content -->
+<!-- Main Content -->
+<div class="max-w-7xl mx-auto p-4 sm:p-6 mt-6">
+
+  <div class="flex flex-col lg:flex-row gap-6">
+    
+    <!-- Add Section Card (Left Side) -->
+    <div class="bg-white shadow-md rounded-xl p-4 border border-gray-200 lg:w-1/3">
+      <h2 class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+        <svg class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"/>
+        </svg>
+        Add New Section
+      </h2>
+
+      <form method="POST" action="/sections/create" class="grid grid-cols-1 gap-3">
+        <input type="text" name="course_code" placeholder="Course Code" class="p-2 border rounded-lg text-sm" required>
+        <input type="text" name="code" placeholder="Section Code" class="p-2 border rounded-lg text-sm" required>
+        <input type="text" name="time" placeholder="Time" class="p-2 border rounded-lg text-sm" required>
+        <input type="text" name="units" placeholder="Units" class="p-2 border rounded-lg text-sm" required>
+        <input type="text" name="room" placeholder="Room" class="p-2 border rounded-lg text-sm" required>
+        <input type="text" name="day" placeholder="Day" class="p-2 border rounded-lg text-sm" required>
+
+        <button type="submit" class="bg-blue-600 text-white py-2 rounded-lg font-medium shadow hover:bg-blue-700 text-sm">
+          Add Section
+        </button>
+      </form>
+    </div>
+
+    <!-- Sections Table (Right Side) -->
+    <div class="lg:w-2/3 overflow-x-auto bg-white rounded-2xl shadow border border-gray-200">
+      <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-gray-800 flex items-center gap-2 p-4">
+        <svg class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/>
+        </svg>
+        Your Sections
+      </h2>
+
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Section Code</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Course Code</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Time</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Units</th>
+            <th class="px-4 py-2 text-center text-sm font-medium text-gray-700">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          {% for section in sections %}
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-2">{{ section['code'] }}</td>
+            <td class="px-4 py-2">{{ section['course_code'] }}</td>
+            <td class="px-4 py-2">{{ section['time'] }}</td>
+            <td class="px-4 py-2">{{ section['units'] }}</td>
+           
+            <td class="px-4 py-2 flex justify-center gap-2">
+              <a href="/section/{{ section['code'] }}" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-full text-sm">Open</a>
+              <button type="button" class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-full text-sm"
+                data-action="open-edit"
+                data-code="{{ section['code'] }}"
+                data-course="{{ section['course_code'] }}"
+                data-time="{{ section['time'] }}"
+                data-units="{{ section['units'] }}"
+                data-room="{{ section['room'] }}"
+                data-day="{{ section['day'] }}">
+                Edit
+              </button>
+              <form action="/sections/{{ section['code'] }}/delete" method="POST" onsubmit="return confirm('Delete this section?')">
+                <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-sm">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="7" class="text-center text-gray-500 py-4">No sections added yet</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- Edit Modal -->
+<div id="editModal" class="fixed inset-0 hidden items-center justify-center z-60">
+  <div class="absolute inset-0 bg-black/40"></div>
+
+  <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-2xl relative z-10">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-xl font-semibold">Edit Section</h3>
+      <button id="closeEdit" class="text-gray-500 hover:text-gray-700">&times;</button>
+    </div>
+
+    <form id="editForm" method="POST" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label class="text-sm text-gray-600">Section Code</label>
+        <input id="edit_code" name="code" readonly class="p-3 border rounded-xl bg-gray-100 w-full">
+      </div>
+      <div>
+        <label class="text-sm text-gray-600">Course Code</label>
+        <input id="edit_course" name="course_code" class="p-3 border rounded-xl w-full">
+      </div>
+      <div>
+        <label class="text-sm text-gray-600">Time</label>
+        <input id="edit_time" name="time" class="p-3 border rounded-xl w-full">
+      </div>
+      <div>
+        <label class="text-sm text-gray-600">Units</label>
+        <input id="edit_units" name="units" class="p-3 border rounded-xl w-full">
+      </div>
+
+      <div class="sm:col-span-2 flex justify-end gap-3 mt-3">
+        <button type="button" id="cancelEdit" class="px-4 py-2 border rounded-lg">Cancel</button>
+        <button type="submit" class="px-5 py-2 bg-blue-600 text-white rounded-lg">Save changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const editModal = document.getElementById("editModal");
+const editForm = document.getElementById("editForm");
+
+// Open edit modal
+document.querySelectorAll('[data-action="open-edit"]').forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.getElementById("edit_code").value = btn.dataset.code;
+    document.getElementById("edit_course").value = btn.dataset.course;
+    document.getElementById("edit_time").value = btn.dataset.time;
+    document.getElementById("edit_units").value = btn.dataset.units;
+   
+    editForm.action = `/sections/${btn.dataset.code}/edit`;
+    editModal.classList.remove("hidden");
+    editModal.classList.add("flex");
+  });
+});
+
+// Close modal
+function closeModal() {
+  editModal.classList.add("hidden");
+  editModal.classList.remove("flex");
+}
+document.getElementById("closeEdit").onclick = closeModal;
+document.getElementById("cancelEdit").onclick = closeModal;
+editModal.addEventListener("click", (e) => { if(e.target===editModal) closeModal(); });
+</script>
+
+</body>
+</html>

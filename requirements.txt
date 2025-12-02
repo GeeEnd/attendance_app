@@ -1,0 +1,11 @@
+Flask
+flask_pymongo
+pandas
+openpyxl
+face_recognition
+opencv-python
+Werkzeug
+authlib
+numpy
+Pillow
+gunicorn
